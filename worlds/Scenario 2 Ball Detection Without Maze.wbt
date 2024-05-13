@@ -1,0 +1,44 @@
+#VRML_SIM R2023b utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/robots/gctronic/e-puck/protos/E-puck.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/balls/protos/Ball.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation -0.28540444982191726 0.7916314184628752 0.5402443866661689 1.176947463775134
+  position -1.730747310707943 -1.9615440952300103 4.2065500883045095
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 2 2
+}
+Ball {
+  translation 0.53 -0.72 0.0525
+  name "Blue"
+  color 0 0 1
+}
+Ball {
+  translation -0.56 -0.62 0.0325
+  name "Red"
+  color 0.666667 0 0
+}
+Ball {
+  translation 0.41 0.56 0.0325
+  name "Green"
+  color 0 0.666667 0
+}
+E-puck {
+  controller "Maze_Nav1"
+}
+Ball {
+  translation -0.45 0.62 0.0225
+  name "Black"
+  color 0 0 0
+}

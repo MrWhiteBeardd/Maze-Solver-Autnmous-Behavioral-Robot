@@ -1,0 +1,93 @@
+#program A
+from controller import Robot
+
+# Create the Robot instance and initialize devices
+robot = Robot()
+timestep = int(robot.getBasicTimeStep())
+left_motor = robot.getMotor('left wheel motor')
+right_motor = robot.getMotor('right wheel motor')
+left_motor.setPosition(float('inf'))
+right_motor.setPosition(float('inf'))
+left_motor.setVelocity(0.0)
+right_motor.setVelocity(0.0)
+
+# Initialize distance sensors (same as before)
+sensors = []
+sensor_names = ['ps0', 'ps1', 'ps2', 'ps3', 'ps4', 'ps5', 'ps6', 'ps7']
+for name in sensor_names:
+    sensor = robot.getDistanceSensor(name)
+    sensor.enable(timestep)
+    sensors.append(sensor)
+
+# Define behavior tree nodes
+class Node:
+    def run(self):
+        pass
+
+class Selector(Node):
+    def __init__(self, children):
+        self.children = children
+
+    def run(self):
+        for child in self.children:
+            if child.run():
+                return True
+        return False
+
+class Sequence(Node):
+    def __init__(self, children):
+        self.children = children
+
+    def run(self):
+        for child in self.children:
+            if not child.run():
+                return False
+        return True
+
+class CheckObstacle(Node):
+    def __init__(self, sensors, threshold):
+        self.sensors = sensors
+        self.threshold = threshold
+
+    def run(self):
+        for sensor in self.sensors:
+            if sensor.getValue() > self.threshold:
+                return True
+        return False
+
+class MoveForward(Node):
+    def run(self):
+        left_motor.setVelocity(5.0)
+        right_motor.setVelocity(5.0)
+        return True
+
+class Turn(Node):
+    def __init__(self, direction):
+        self.direction = direction
+
+    def run(self):
+        if self.direction == 'left':
+            left_motor.setVelocity(2.0)
+            right_motor.setVelocity(-2.0)
+        elif self.direction == 'right':
+            left_motor.setVelocity(-2.0)
+            right_motor.setVelocity(2.0)
+        return True
+
+# Construct the behavior tree
+obstacle_threshold = 80
+root = Selector([
+    Sequence([
+        CheckObstacle(sensors[0:3], obstacle_threshold),
+        Turn('right')
+    ]),
+    Sequence([
+        CheckObstacle(sensors[5:8], obstacle_threshold),
+        Turn('left')
+    ]),
+    MoveForward()
+])
+
+# Main loop
+while robot.step(timestep) != -1:
+    root.run()
